@@ -1,0 +1,73 @@
+{% extends "plantilla.html" %}
+{% block body %}
+
+<style>
+    .table-bordered > :not(caption) > * > * {
+        border-width: 0 var(--bs-border-width);
+        color: rgb(0, 0, 12);
+    }
+</style>
+
+<br>
+<div class="card">
+    <div class="card-title text-center">
+        <h3><b>Technology List</b></h3>
+    </div>
+</div>  
+<br>
+<div style="text-align: center;">
+    <a href="{% url 'new_technology' %}" class="btn btn-success">Add Technology</a>
+    <button class="btn btn-primary" onclick="printTable()">Print Report</button>
+</div>
+<table class="table table-bordered table-striped table-hover text-center" id="tbl-technologies"> 
+    <thead>
+        <tr>
+            <th>Technology ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Version</th>
+            <th>Image</th>
+            <th>Creation Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for technology in list_technologies %}
+        <tr>
+            <td>{{ technology.id }}</td>
+            <td>{{ technology.name }}</td>
+            <td>{{ technology.description }}</td>
+            <td>{{ technology.version }}</td>
+            <td>
+                {% if technology.image %}
+                    <img src="{{ technology.image.url }}" alt="Image" width="50" height="50">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+            <td>{{ technology.creation_date }}</td>
+            <td>
+                <a href="{% url 'edit_technology' technology.id %}" class="btn btn-warning">Edit</a>
+                <a href="{% url 'delete_technology' technology.id %}" onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $('#tbl-technologies').DataTable();
+    });
+
+    function printTable() {
+        var printContents = document.getElementById('tbl-technologies').outerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload();
+    }
+</script>
+
+{% endblock %}

@@ -12,7 +12,7 @@ class Technology(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Technologies"
+        db_table = "Technologies"
 
 class Category(models.Model):
     STATUS_CHOICES = [
@@ -30,7 +30,7 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Categories"  
+        db_table = "Categories"  
 
 class Tag(models.Model):
     STATUS_CHOICES = [
@@ -48,7 +48,7 @@ class Tag(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Tags"  
+        db_table = "Tags"  
 
 class Project(models.Model):
     name = models.CharField(max_length=200)  
@@ -62,5 +62,5 @@ class Project(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        verbose_name_plural = "Projects" 
+        db_table = "Projects" 
         

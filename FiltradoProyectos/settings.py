@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'FiltradoProyectos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'FiltrarProyecto',  
+        'NAME': 'FiltradoProyecto',  
         'USER': 'utc2024',        
         'PASSWORD': 'Tesis2024-2025',  
         'HOST': 'localhost',      
