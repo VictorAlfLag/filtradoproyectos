@@ -1,0 +1,101 @@
+{% extends "plantilla.html" %}
+
+{% block body %}
+{% if messages %}
+    <div class="alert alert-info">
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<style>
+    .table-bordered > :not(caption) > * > * {
+        border-width: 0 var(--bs-border-width);
+        color: rgb(0, 0, 12);
+    }
+</style>
+
+<br>
+<div class="card">
+    <div class="card-title text-center">
+        <h3><b>Project List</b></h3>
+    </div>
+</div>  
+<br>
+<div style="text-align: center;">
+    <a href="{% url 'new_project' %}" class="btn btn-success">Add Project</a>
+    <button class="btn btn-primary" onclick="printTable()">Print Report</button>
+</div>
+
+<table class="table table-bordered table-striped table-hover text-center" id="tbl-projects"> 
+    <thead>
+        <tr>
+            <th>Project ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Category</th>
+            <th>Tags</th>
+            <th>Technology</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in list_projects %}
+        <tr>
+            <td>{{ project.id }}</td>
+            <td>{{ project.name }}</td>
+            <td>{{ project.description }}</td>
+            <td>{{ project.start_date }}</td>
+            <td>{{ project.end_date }}</td>
+            <td>{{ project.category.name }}</td>
+            <td>
+                {% for tag in project.tags.all %}
+                    <span class="badge bg-secondary">{{ tag.name }}</span>
+                {% endfor %}
+            </td>
+            <td>{{ project.technology.name }}</td>
+            <td>
+                <a href="{% url 'edit_project' project.id %}" class="btn btn-warning">Edit</a>
+                <a href="javascript:void(0);" onclick="confirmDelete('{{ project.id }}')" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $('#tbl-projects').DataTable();
+    });
+
+    function printTable() {
+        var printContents = document.getElementById('tbl-projects').outerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload();
+    }
+
+    function confirmDelete(projectId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this project!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{% url 'delete_project' 0 %}".replace("0", projectId);
+            }
+        });
+    }
+</script>
+
+{% endblock %}

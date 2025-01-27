@@ -29,7 +29,9 @@
 
                 <!-- Creation Date -->
                 <label for="creation_date">Creation Date: <br></label>
-                <input type="datetime-local" name="creation_date" class="form-control" id="creation_date">
+                <!-- Date format adjusted to YYYY-MM-DDTHH:MM -->
+                <input type="datetime-local" name="creation_date" class="form-control" id="creation_date" 
+                       min="2025-01-01T00:00" max="2035-12-31T23:59" required>
 
                 <br>
                 <button type="submit" class="btn btn-success">Save</button>

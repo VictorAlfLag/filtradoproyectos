@@ -1,0 +1,111 @@
+{% extends "plantilla.html" %}
+
+{% block body %}
+<h1>EDIT PROJECT</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{% url 'update_project' id=project.id %}" method="post" enctype="multipart/form-data" id="frm_project">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ project.id }}">
+
+                <label for="name"><b>Project Name:</b></label>
+                <input type="text" name="name" class="form-control" value="{{ project.name }}" id="name" placeholder="Enter the project's name">
+
+                <label for="description"><b>Description:</b></label>
+                <textarea name="description" class="form-control" id="description" placeholder="Enter a description of the project">{{ project.description }}</textarea>
+
+                <label for="start_date"><b>Start Date:</b></label>
+                <input type="date" name="start_date" class="form-control" value="{{ project.start_date|date:'Y-m-d' }}" id="start_date">
+
+                <label for="end_date"><b>End Date:</b></label>
+                <input type="date" name="end_date" class="form-control" value="{{ project.end_date|date:'Y-m-d' }}" id="end_date">
+
+                <label for="category"><b>Category:</b></label>
+                <select name="category" class="form-control" id="category">
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == project.category.id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="tags"><b>Tags:</b></label>
+                <select name="tags" class="form-control" id="tags" multiple>
+                    {% for tag in tags %}
+                        <option value="{{ tag.id }}" {% if tag in project.tags.all %}selected{% endif %}>{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="technology"><b>Technology:</b></label>
+                <select name="technology" class="form-control" id="technology">
+                    {% for tech in technologies %}
+                        <option value="{{ tech.id }}" {% if tech.id == project.technology.id %}selected{% endif %}>{{ tech.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <br>
+                <button type="submit" class="btn btn-warning">Update</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'list_projects' %}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#frm_project').validate({
+        rules: {
+            name: {
+                required: true,
+                minlength: 3,
+                maxlength: 200,
+            },
+            description: {
+                required: true,
+                minlength: 10,
+            },
+            start_date: {
+                required: true,
+            },
+            end_date: {
+                required: true,
+            },
+            category: {
+                required: true,
+            },
+            technology: {
+                required: true,
+            },
+            tags: {
+                required: true,
+            },
+        },
+        messages: {
+            name: {
+                required: 'Project name is required',
+                minlength: 'Name must be at least 3 characters long',
+                maxlength: 'Name must be less than 200 characters long',
+            },
+            description: {
+                required: 'Description is required',
+                minlength: 'Description must be at least 10 characters long',
+            },
+            start_date: {
+                required: 'Start date is required',
+            },
+            end_date: {
+                required: 'End date is required',
+            },
+            category: {
+                required: 'Category is required',
+            },
+            technology: {
+                required: 'Technology is required',
+            },
+            tags: {
+                required: 'At least one tag is required',
+            },
+        },
+    });
+</script>
+
+{% endblock %}

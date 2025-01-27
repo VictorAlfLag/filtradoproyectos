@@ -1,0 +1,164 @@
+{% extends "plantilla.html" %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{% url 'save_project' %}" enctype="multipart/form-data" method="post" id="frm_project">
+                {% csrf_token %}
+                
+                <!-- Project Name -->
+                <label for="name">Project Name: <br></label>
+                <input type="text" name="name" class="form-control" id="name" placeholder="Enter the project's name">
+
+                <!-- Description -->
+                <label for="description">Description: <br></label>
+                <textarea name="description" class="form-control" id="description" placeholder="Enter a description of the project"></textarea>
+
+                <!-- Start Date -->
+                <label for="start_date">Start Date: <br></label>
+                <input type="date" name="start_date" class="form-control" id="start_date" required>
+
+                <!-- End Date -->
+                <label for="end_date">End Date: <br></label>
+                <input type="date" name="end_date" class="form-control" id="end_date" required>
+
+                <!-- Category -->
+                <label for="category">Category: <br></label>
+                <select name="category" class="form-control" id="category" required>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Tags -->
+                <label for="tags">Tags: <br></label>
+                <select name="tags" class="form-control" id="tags" multiple required>
+                    {% for tag in tags %}
+                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Technology -->
+                <label for="technology">Technology: <br></label>
+                <select name="technology" class="form-control" id="technology" required>
+                    {% for tech in technologies %}
+                        <option value="{{ tech.id }}">{{ tech.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <br>
+                <button type="submit" class="btn btn-success">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JQuery Validation -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Validación del formulario
+        $('#frm_project').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 200,
+                },
+                description: {
+                    required: true,
+                    minlength: 10,
+                },
+                start_date: {
+                    required: true,
+                },
+                end_date: {
+                    required: true,
+                },
+                category: {
+                    required: true,
+                },
+                tags: {
+                    required: true,
+                },
+                technology: {
+                    required: true,
+                },
+            },
+            messages: {
+                name: {
+                    required: 'Project name is required',
+                    minlength: 'The name must be at least 3 characters long',
+                    maxlength: 'The name must be less than 200 characters',
+                },
+                description: {
+                    required: 'Description is required',
+                    minlength: 'The description must be at least 10 characters long',
+                },
+                start_date: {
+                    required: 'Start date is required',
+                },
+                end_date: {
+                    required: 'End date is required',
+                },
+                category: {
+                    required: 'Category is required',
+                },
+                tags: {
+                    required: 'At least one tag must be selected',
+                },
+                technology: {
+                    required: 'Technology is required',
+                },
+            },
+            errorPlacement: function(error, element) {
+                error.insertAfter(element);  // Place error message after the element
+            },
+            highlight: function(element) {
+                $(element).addClass('is-invalid');  // Add a red border to the input field
+            },
+            unhighlight: function(element) {
+                $(element).removeClass('is-invalid');  // Remove the red border
+            },
+            submitHandler: function(form) {
+                Swal.fire({
+                    title: 'Confirmation',
+                    text: 'Are you sure you want to save this project?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Save',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Submit the form if confirmed
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<!-- Estilo para mensajes de error -->
+<style>
+    /* Estilo de los mensajes de error en rojo */
+    label.error {
+        color: red;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .form-control.error {
+        border: 1px solid red;
+    }
+
+    /* Para los mensajes debajo de los campos */
+    .invalid-feedback {
+        color: red;
+        font-size: 12px;
+    }
+</style>
+
+{% endblock %}

@@ -1,5 +1,15 @@
 {% extends "plantilla.html" %}
+
 {% block body %}
+{% if messages %}
+    <div class="alert alert-info">
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 
 <style>
     .table-bordered > :not(caption) > * > * {
@@ -19,6 +29,7 @@
     <a href="{% url 'new_technology' %}" class="btn btn-success">Add Technology</a>
     <button class="btn btn-primary" onclick="printTable()">Print Report</button>
 </div>
+
 <table class="table table-bordered table-striped table-hover text-center" id="tbl-technologies"> 
     <thead>
         <tr>
@@ -48,7 +59,7 @@
             <td>{{ technology.creation_date }}</td>
             <td>
                 <a href="{% url 'edit_technology' technology.id %}" class="btn btn-warning">Edit</a>
-                <a href="{% url 'delete_technology' technology.id %}" onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">Delete</a>
+                <a href="javascript:void(0);" onclick="confirmDelete('{{ technology.id }}')" class="btn btn-danger">Delete</a>
             </td>
         </tr>
         {% endfor %}
@@ -67,6 +78,23 @@
         window.print();
         document.body.innerHTML = originalContents;
         location.reload();
+    }
+
+ 
+    function confirmDelete(technologyId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this technology!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+              
+                window.location.href = "{% url 'delete_technology' 0 %}".replace("0", technologyId);
+            }
+        });
     }
 </script>
 

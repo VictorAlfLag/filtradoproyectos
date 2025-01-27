@@ -5,7 +5,7 @@ class Technology(models.Model):
     name = models.CharField(max_length=100) 
     description = models.TextField()  
     version = models.CharField(max_length=50) 
-    image = models.ImageField(upload_to='technologies/', null=True, blank=True)  
+    image = models.ImageField(upload_to='technologies', max_length=100)  
     creation_date = models.DateTimeField(auto_now_add=True)  
 
     def __str__(self):
@@ -24,7 +24,7 @@ class Category(models.Model):
     description = models.TextField()  
     creation_date = models.DateTimeField(auto_now_add=True)  
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='active') 
-    icon = models.ImageField(upload_to='categories/', null=True, blank=True) 
+    icon = models.ImageField(upload_to='categories', max_length=100) 
 
     def __str__(self):
         return self.name

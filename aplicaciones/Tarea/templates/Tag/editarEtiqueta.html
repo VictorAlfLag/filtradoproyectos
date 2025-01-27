@@ -1,0 +1,81 @@
+{% extends "plantilla.html" %}
+
+{% block body %}
+<h1>EDIT TAG</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{% url 'update_tag' id=tag.id %}" method="post" enctype="multipart/form-data" id="frm_tag">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ tag.id }}">
+
+                <label for="name"><b>Tag Name:</b></label>
+                <input type="text" name="name" class="form-control" value="{{ tag.name }}" id="name" placeholder="Enter the tag's name">
+
+                <label for="description"><b>Description:</b></label>
+                <textarea name="description" class="form-control" id="description" placeholder="Enter a description of the tag">{{ tag.description }}</textarea>
+
+                <label for="status"><b>Status:</b></label>
+                <select name="status" class="form-control" id="status">
+                    <option value="active" {% if tag.status == 'active' %}selected{% endif %}>Active</option>
+                    <option value="inactive" {% if tag.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                </select>
+
+                <label for="code"><b>Code:</b></label>
+                <input type="text" name="code" class="form-control" value="{{ tag.code }}" id="code" placeholder="Enter the tag's code (optional)">
+
+                <label for="creation_date"><b>Creation Date:</b></label>
+                <input type="datetime-local" name="creation_date" class="form-control" value="{{ tag.creation_date|date:'Y-m-d\TH:i' }}" id="creation_date" disabled>
+
+                <br>
+                <button type="submit" class="btn btn-warning">Update</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'list_tags' %}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#frm_tag').validate({
+        rules: {
+            name: {
+                required: true,
+                minlength: 3,
+                maxlength: 100,
+            },
+            description: {
+                required: true,
+                minlength: 10,
+            },
+            status: {
+                required: true,
+            },
+            code: {
+                required: false,
+                minlength: 1,
+                maxlength: 100,
+            },
+        },
+        messages: {
+            name: {
+                required: 'Tag name is required',
+                minlength: 'Name must be at least 3 characters long',
+                maxlength: 'Name must be less than 100 characters long',
+            },
+            description: {
+                required: 'Description is required',
+                minlength: 'Description must be at least 10 characters long',
+            },
+            status: {
+                required: 'Status is required',
+            },
+            code: {
+                minlength: 'Code must be at least 1 character long',
+                maxlength: 'Code must be less than 100 characters long',
+            },
+        },
+    });
+</script>
+
+{% endblock %}

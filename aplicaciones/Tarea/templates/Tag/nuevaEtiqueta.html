@@ -1,0 +1,137 @@
+{% extends "plantilla.html" %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{% url 'save_tag' %}" enctype="multipart/form-data" method="post" id="frm_tag">
+                {% csrf_token %}
+                
+                <!-- Tag Name -->
+                <label for="name">Tag Name: <br></label>
+                <input type="text" name="name" class="form-control" id="name" placeholder="Enter the tag's name">
+
+                <!-- Description -->
+                <label for="description">Description: <br></label>
+                <textarea name="description" class="form-control" id="description" placeholder="Enter a description of the tag"></textarea>
+
+                <!-- Status -->
+                <label for="status">Status: <br></label>
+                <select name="status" class="form-control" id="status">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+
+                <!-- Code -->
+                <label for="code">Code: <br></label>
+                <input type="text" name="code" class="form-control" id="code" placeholder="Enter the tag's code (optional)">
+
+                <!-- Creation Date -->
+                <label for="creation_date">Creation Date: <br></label>
+                <!-- Date format adjusted to YYYY-MM-DDTHH:MM -->
+                <input type="datetime-local" name="creation_date" class="form-control" id="creation_date" 
+                       min="2025-01-01T00:00" max="2035-12-31T23:59" required>
+
+                <br>
+                <button type="submit" class="btn btn-success">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JQuery Validation -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Validación del formulario
+        $('#frm_tag').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100,
+                },
+                description: {
+                    required: true,
+                    minlength: 10,
+                },
+                status: {
+                    required: true,
+                },
+                code: {
+                    maxlength: 100,
+                },
+                creation_date: {
+                    required: true,
+                },
+            },
+            messages: {
+                name: {
+                    required: 'Tag name is required',
+                    minlength: 'The name must be at least 3 characters long',
+                    maxlength: 'The name must be less than 100 characters',
+                },
+                description: {
+                    required: 'Description is required',
+                    minlength: 'The description must be at least 10 characters long',
+                },
+                status: {
+                    required: 'Status is required',
+                },
+                code: {
+                    maxlength: 'The code must be less than 100 characters',
+                },
+                creation_date: {
+                    required: 'Creation date is required',
+                },
+            },
+            errorPlacement: function(error, element) {
+                error.insertAfter(element);  // Place error message after the element
+            },
+            highlight: function(element) {
+                $(element).addClass('is-invalid');  // Add a red border to the input field
+            },
+            unhighlight: function(element) {
+                $(element).removeClass('is-invalid');  // Remove the red border
+            },
+            submitHandler: function(form) {
+                Swal.fire({
+                    title: 'Confirmation',
+                    text: 'Are you sure you want to save this tag?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Save',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Submit the form if confirmed
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<!-- Estilo para mensajes de error -->
+<style>
+    /* Estilo de los mensajes de error en rojo */
+    label.error {
+        color: red;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .form-control.error {
+        border: 1px solid red;
+    }
+
+    /* Para los mensajes debajo de los campos */
+    .invalid-feedback {
+        color: red;
+        font-size: 12px;
+    }
+</style>
+
+{% endblock %}

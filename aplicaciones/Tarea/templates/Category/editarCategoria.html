@@ -1,0 +1,78 @@
+{% extends "plantilla.html" %}
+
+{% block body %}
+<h1>EDIT CATEGORY</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{% url 'update_category' id=category.id %}" method="post" enctype="multipart/form-data" id="frm_category">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ category.id }}">
+
+                <label for="name"><b>Category Name:</b></label>
+                <input type="text" name="name" class="form-control" value="{{ category.name }}" id="name" placeholder="Enter the category's name">
+
+                <label for="description"><b>Description:</b></label>
+                <textarea name="description" class="form-control" id="description" placeholder="Enter a description of the category">{{ category.description }}</textarea>
+
+                <label for="status"><b>Status:</b></label>
+                <select name="status" class="form-control" id="status">
+                    <option value="active" {% if category.status == 'active' %}selected{% endif %}>Active</option>
+                    <option value="inactive" {% if category.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                </select>
+
+                <label for="icon"><b>Icon:</b></label>
+                <input type="file" name="icon" class="form-control" id="icon" accept="image/*">
+                {% if category.icon %}
+                    <img src="{{ category.icon.url }}" alt="Icon" width="100" height="100">
+                {% endif %}
+
+                <label for="creation_date"><b>Creation Date:</b></label>
+                <input type="datetime-local" name="creation_date" class="form-control" value="{{ category.creation_date|date:'Y-m-d\TH:i' }}" id="creation_date" disabled>
+
+                <br>
+                <button type="submit" class="btn btn-warning">Update</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'list_categories' %}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#frm_category').validate({
+        rules: {
+            name: {
+                required: true,
+                minlength: 3,
+                maxlength: 100,
+            },
+            description: {
+                required: true,
+                minlength: 10,
+            },
+            status: {
+                required: true,
+            },
+            icon: {
+                required: false,
+            },
+        },
+        messages: {
+            name: {
+                required: 'Category name is required',
+                minlength: 'Name must be at least 3 characters long',
+                maxlength: 'Name must be less than 100 characters long',
+            },
+            description: {
+                required: 'Description is required',
+                minlength: 'Description must be at least 10 characters long',
+            },
+            status: {
+                required: 'Status is required',
+            },
+        },
+    });
+</script>
+
+{% endblock %}
